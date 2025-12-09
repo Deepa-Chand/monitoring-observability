@@ -28,6 +28,7 @@ It follows a **pull model**:
 
       “Hey app, give me your metrics”
 - Inside Prometheus Server
+  
   | Sub-part      | Purpose               |
 | ------------- | --------------------- |
 | Scraper       | Fetches `/metrics`    |
@@ -37,7 +38,7 @@ It follows a **pull model**:
 
 **Scraping**
 - Prometheus regularly scrapes targets (your app instances, exporters) by pulling metrics using HTTP.
-- The scrape interval is configurable (default 15s).
+- The scrape interval is configurable (default 1m).
 - Targets are either fixed (static_configs) or discovered dynamically (via service discovery on Kubernetes, AWS, etc.).
 - Scraping pulls metrics actively; Prometheus does not receive pushed metrics except through special tools like Pushgateway.
 
@@ -47,7 +48,7 @@ It follows a **pull model**:
 - How it works: job pushes metrics (HTTP POST/PUT) to Pushgateway → Pushgateway stores them as time series with labels → Prometheus scrapes Pushgateway’s /metrics endpoint.
 - Typical use case: CI jobs, cron jobs, short-lived batch tasks, containers that exit quickly.
 - Not for regular apps: do not use Pushgateway as a general push-based ingestion for long-running services.
-- 
+  
 **Targets**
 - What it is: Any endpoint that exposes metrics.
 - target=>
@@ -84,12 +85,11 @@ It follows a **pull model**:
 - What it is: An HTTP endpoint where metrics are exposed.
 - ✅ Prometheus Format  `metric_name{label1="value"} 123`
 - example: `http_requests_total{method="GET",status="200"} 4567
-- Prometheus understands ONLY this format.
 
 **PromQL (Query Language 🧠)**
 - What it is: Language to query, aggregate, and analyze metrics.
-- Used for: Dashboards, Alerts, Troubleshooting`
-- ✅ Example Queries: Requests per second:=> `rate(http_requests_total[5m])`
+- Used for: Dashboards, Alerts, Troubleshooting
+- Example Queries: Requests per second:=> `rate(http_requests_total[5m])`
 
 **Time-Series Database (TSDB 💾)**
 - What it stores: Each metric is stored as: `(metric_name + labels) → time → value`
